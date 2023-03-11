@@ -8,10 +8,13 @@ You are either working or taking a break. So we have those two states in the rea
 
 # How it works
 
-This is a server listening on a port of your choosing. What about client? We have `curl` already, and HTTP is more than capable of handling all our usecases.
+This is a TUI application with vim-like keybindigns.
 
-# Endpoints
+# Todo
 
+- [x] setup tui
+- [ ] refactor main file
+- [ ] replace all unwraps with expect with good error messages
 - [ ] start timer
 - [ ] stop timer
 - [ ] toggle timer
@@ -19,10 +22,13 @@ This is a server listening on a port of your choosing. What about client? We hav
 
 # Env vars
 
-- WORK_DURATION (in mins)
-- REST_DURATION (in mins)
-- EXTEND_DURATION (in mins)
+```bash
+WORK_DURATION=25 # in mins
+REST_DURATION=5 # in mins
+EXTEND_DURATION=5 # in mins
+```
 
 # Features
 
 - [ ] notification
+- [ ] customizable colors
