@@ -7,16 +7,20 @@ pub struct Config {
 }
 
 pub struct ConfigColor {
-    pub border: TColor,
+    pub gray: TColor,
+    pub white: TColor,
 }
 
 impl Config {
     pub fn read() -> Config {
-        let border = env::var("COLOR_GRAY".to_string()).unwrap_or(String::from("#928374"));
-        let border = Color::new(border);
+        let gray = env::var("COLOR_GRAY".to_string()).unwrap_or(String::from("#928374"));
+        let gray = Color::new(gray);
+
+        let white = env::var("COLOR_LIGHT".to_string()).unwrap_or(String::from("#fbf1c7"));
+        let white = Color::new(white);
 
         Config {
-            color: ConfigColor { border },
+            color: ConfigColor { gray, white },
         }
     }
 }

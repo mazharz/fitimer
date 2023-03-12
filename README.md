@@ -13,6 +13,7 @@ This is a TUI application with vim-like keybindigns.
 ## Todo
 
 - [x] setup tui
+- [x] add tabs
 - [ ] refactor main file
 - [ ] replace all unwraps with expect with good error messages
 - [ ] start timer
