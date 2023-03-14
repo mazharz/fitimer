@@ -14,7 +14,7 @@ This is a TUI application with vim-like keybindigns.
 
 - [x] setup tui
 - [x] add tabs
-- [ ] refactor main file
+- [x] refactor main file
 - [ ] replace all unwraps with expect with good error messages
 - [ ] start timer
 - [ ] stop timer
@@ -24,20 +24,21 @@ This is a TUI application with vim-like keybindigns.
 ## Env vars
 
 ```bash
-# These are gruvbox colors
-COLOR_DARK="#282828" # hex color code
-COLOR_GRAY="#928374" # hex color code
-COLOR_LIGHT="#fbf1c7" # hex color code
-COLOR_RED="#cc241d" # hex color code
-COLOR_GREEN="#98971a" # hex color code
-COLOR_YELLOW="#d79921" # hex color code
-COLOR_BLUE="#458588" # hex color code
-COLOR_PURPLE="#b16286" # hex color code
-COLOR_AQUA="#689d6a" # hex color code
-COLOR_ORANGE="#d65d0e" # hex color code
-WORK_DURATION=25 # in mins
-REST_DURATION=5 # in mins
-EXTEND_DURATION=5 # in mins
+# These are gruvbox colors (all in hex code)
+COLOR_DARK="#282828"
+COLOR_GRAY="#928374"
+COLOR_LIGHT="#fbf1c7"
+COLOR_RED="#cc241d"
+COLOR_GREEN="#98971a"
+COLOR_YELLOW="#d79921"
+COLOR_BLUE="#458588"
+COLOR_PURPLE="#b16286"
+COLOR_AQUA="#689d6a"
+COLOR_ORANGE="#d65d0e"
+# Durations are in mins
+DURATION_WORK=25
+DURATION_REST=5
+DURATION_EXTEND=5
 ```
 
 ## Features
