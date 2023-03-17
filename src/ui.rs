@@ -58,7 +58,16 @@ fn draw_timer_tab<B: Backend>(f: &mut Frame<B>, app: &App, area: Rect) {
         )
         .split(area);
 
-    let timer_tab_content = Paragraph::new(Spans::from("This is the timer tab"));
+    let status_text = match app.timer.enabled {
+        true => "Enabled",
+        false => "Disabled",
+    };
+    let current_remaining = app.timer.current_remaining.format();
+    let current_remaining = format!("Remaining time: {}", current_remaining);
+    let timer_tab_content = Paragraph::new(vec![
+        Spans::from(format!("Status: {}", status_text)),
+        Spans::from(current_remaining),
+    ]);
     f.render_widget(timer_tab_content, chunks[0]);
 
     // TODO: change this to time remaining & percentage for ratio based on that

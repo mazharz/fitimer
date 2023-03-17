@@ -15,7 +15,8 @@ This is a TUI application with vim-like keybindigns.
 - [x] setup tui
 - [x] add tabs
 - [x] refactor main file
-- [ ] replace all unwraps with expect with good error messages
+- [x] replace all unwraps with expect with good error messages
+- [x] add timer state
 - [ ] start timer
 - [ ] stop timer
 - [ ] toggle timer

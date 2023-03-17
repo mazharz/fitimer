@@ -1,7 +1,9 @@
 pub mod app;
 pub mod color;
 pub mod config;
+pub mod duration;
 pub mod env;
+pub mod formatter;
 pub mod ui;
 
 use app::App;
@@ -54,6 +56,7 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
                 KeyCode::Char('q') => return Ok(()),
                 KeyCode::Char('e') => app.tabs.next(),
                 KeyCode::Char('r') => app.tabs.previous(),
+                KeyCode::Char('t') => app.timer.toggle_enabled(),
                 _ => {}
             }
         }
