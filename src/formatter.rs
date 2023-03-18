@@ -1,7 +1,7 @@
 pub struct Formatter;
 
 impl Formatter {
-    pub fn add_trailing_zero(number: u64) -> String {
+    pub fn add_trailing_zero(number: i64) -> String {
         let formatted = if number > 9 {
             format!("{}", number)
         } else {

@@ -17,9 +17,8 @@ This is a TUI application with vim-like keybindigns.
 - [x] refactor main file
 - [x] replace all unwraps with expect with good error messages
 - [x] add timer state
-- [ ] start timer
-- [ ] stop timer
-- [ ] toggle timer
+- [x] toggle timer
+- [ ] change timer state between work and rest
 - [ ] extend break
 
 ## Env vars
@@ -40,6 +39,8 @@ COLOR_ORANGE="#d65d0e"
 DURATION_WORK=25
 DURATION_REST=5
 DURATION_EXTEND=5
+# How frequent app should get re-rendered
+TICK_RATE=250
 ```
 
 ## Features

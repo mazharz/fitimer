@@ -15,4 +15,6 @@ impl<'a> App<'a> {
             timer: TimerState::new(false),
         }
     }
+
+    pub fn on_tick(&mut self) {}
 }

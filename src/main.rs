@@ -1,18 +1,23 @@
 pub mod app;
 pub mod color;
 pub mod config;
-pub mod duration;
 pub mod env;
+pub mod expiry;
 pub mod formatter;
 pub mod ui;
 
 use app::App;
+use config::Config;
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use std::{error::Error, io};
+use std::{
+    error::Error,
+    io,
+    time::{Duration, Instant},
+};
 use tui::{
     backend::{Backend, CrosstermBackend},
     Terminal,
@@ -48,17 +53,33 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> {
+    let tick_rate = Config::read().app.tick_rate;
+    let tick_rate = Duration::from_millis(tick_rate);
+
+    let mut last_tick = Instant::now();
+
     loop {
         terminal.draw(|f| draw(f, &app))?;
 
-        if let Event::Key(key) = event::read()? {
-            match key.code {
-                KeyCode::Char('q') => return Ok(()),
-                KeyCode::Char('e') => app.tabs.next(),
-                KeyCode::Char('r') => app.tabs.previous(),
-                KeyCode::Char('t') => app.timer.toggle_enabled(),
-                _ => {}
+        let timeout = tick_rate
+            .checked_sub(last_tick.elapsed())
+            .unwrap_or_else(|| Duration::from_secs(0));
+
+        if event::poll(timeout)? {
+            if let Event::Key(key) = event::read()? {
+                match key.code {
+                    KeyCode::Char('q') => return Ok(()),
+                    KeyCode::Char('e') => app.tabs.next(),
+                    KeyCode::Char('r') => app.tabs.previous(),
+                    KeyCode::Char('t') => app.timer.toggle_enabled(),
+                    _ => {}
+                }
             }
+        }
+
+        if last_tick.elapsed() >= tick_rate {
+            app.on_tick();
+            last_tick = Instant::now();
         }
     }
 }
