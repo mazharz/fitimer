@@ -1,78 +1,44 @@
 use tui::{
     backend::Backend,
-    layout::{Constraint, Direction, Layout, Rect},
+    layout::{Constraint, Layout},
     style::{Modifier, Style},
-    text::{Span, Spans},
-    widgets::{Block, Borders, Gauge, Paragraph, Tabs},
+    widgets::{Gauge, Paragraph},
     Frame,
 };
 
-use crate::{config::Config, App};
+use crate::{app::timerstate::TimerType, config::Config, App};
 
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let colors = Config::read();
-    let gray = colors.color.gray;
     let white = colors.color.white;
-    let black = colors.color.black;
+    let gray = colors.color.gray;
 
     let chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Length(1), Constraint::Min(0)].as_ref())
+        .constraints([Constraint::Min(1), Constraint::Length(1)].as_ref())
         .split(f.size());
 
-    let titles = app
-        .tabs
-        .titles
-        .iter()
-        .map(|t| Spans::from(Span::styled(*t, Style::default())))
-        .collect();
-
-    let tabs = Tabs::new(titles)
-        .divider("")
-        .block(Block::default().borders(Borders::NONE))
-        .select(app.tabs.active_index)
-        .style(Style::default().fg(gray))
-        .highlight_style(Style::default().bg(white).fg(black));
-    f.render_widget(tabs, chunks[0]);
-
-    match app.tabs.active_index {
-        0 => draw_timer_tab(f, app, chunks[1]),
-        1 => draw_stats_tab(f, app, chunks[1]),
-        _ => {}
-    };
-}
-
-fn draw_timer_tab<B: Backend>(f: &mut Frame<B>, app: &App, area: Rect) {
-    let colors = Config::read();
-    let white = colors.color.white;
-    let gray = colors.color.gray;
-
-    let chunks = Layout::default()
-        .constraints(
-            [
-                // TODO: figure out this 4 later
-                Constraint::Min(1),
-                Constraint::Length(1),
-            ]
-            .as_ref(),
-        )
-        .split(area);
-
     let timer_state = &app.timer;
-    let timer_tab_content = Paragraph::new(vec![]);
-    f.render_widget(timer_tab_content, chunks[0]);
+    let empty_space_above = Paragraph::new(vec![]);
+    f.render_widget(empty_space_above, chunks[0]);
 
-    // TODO: change this to time remaining & percentage for ratio based on that
-    // timer and the full time of the current timer cycle
     let full_secs = app.timer.expiry.duration.as_secs();
     let remaining_secs = app.timer.expiry.get();
 
     let progress = (remaining_secs as f64) * 100.0 / (full_secs as f64);
-    let progress = progress / 100.0;
+    let progress = if progress / 100.0 > 0.0 {
+        progress / 100.0
+    } else {
+        0.0
+    };
+    let progress = if app.timer.enabled { progress } else { 1.0 };
 
-    // let progress = 0.41;
+    let current_type = match app.timer.timer_type {
+        TimerType::Work => "Work",
+        TimerType::Rest => "Rest",
+    };
+
     let progress_label = if app.timer.enabled {
-        timer_state.expiry.format()
+        format!("{} {}", current_type, timer_state.expiry.format())
     } else {
         String::from("Disabled")
     };
@@ -86,9 +52,4 @@ fn draw_timer_tab<B: Backend>(f: &mut Frame<B>, app: &App, area: Rect) {
         .label(progress_label)
         .ratio(progress);
     f.render_widget(timer_progress, chunks[1]);
-}
-
-fn draw_stats_tab<B: Backend>(f: &mut Frame<B>, app: &App, area: Rect) {
-    let stats_tab_content = Paragraph::new(Spans::from("This is the stats tab"));
-    f.render_widget(stats_tab_content, area);
 }

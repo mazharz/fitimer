@@ -18,8 +18,7 @@ impl Expiry {
     }
 
     pub fn format(&self) -> String {
-        let diff = self.end - Local::now();
-        let diff = diff.num_seconds();
+        let diff = self.get();
 
         let mins = (diff / 60) % 60;
         let mins = Formatter::add_trailing_zero(mins);
@@ -32,6 +31,19 @@ impl Expiry {
     pub fn get(&self) -> i64 {
         let diff = self.end - Local::now();
         let diff = diff.num_seconds();
-        diff
+
+        if diff <= 0 {
+            return 0;
+        }
+
+        return diff;
+    }
+
+    pub fn get_is_expired(&self) -> bool {
+        let value = self.get();
+        if value <= 0 {
+            return true;
+        }
+        return false;
     }
 }

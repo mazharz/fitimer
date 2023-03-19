@@ -1,17 +1,14 @@
-use self::{tabsstate::TabsState, timerstate::TimerState};
+use self::timerstate::TimerState;
 
-pub mod tabsstate;
 pub mod timerstate;
 
-pub struct App<'a> {
-    pub tabs: TabsState<'a>,
+pub struct App {
     pub timer: TimerState,
 }
 
-impl<'a> App<'a> {
-    pub fn new() -> App<'a> {
+impl App {
+    pub fn new() -> App {
         App {
-            tabs: TabsState::new(vec![" Timer ", " Stats "]),
             timer: TimerState::new(false),
         }
     }

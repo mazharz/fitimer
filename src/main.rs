@@ -65,12 +65,14 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
             .checked_sub(last_tick.elapsed())
             .unwrap_or_else(|| Duration::from_secs(0));
 
+        app.timer.check();
+
         if event::poll(timeout)? {
             if let Event::Key(key) = event::read()? {
                 match key.code {
                     KeyCode::Char('q') => return Ok(()),
-                    KeyCode::Char('e') => app.tabs.next(),
-                    KeyCode::Char('r') => app.tabs.previous(),
+                    KeyCode::Char('w') => app.timer.change_to_work(false),
+                    KeyCode::Char('r') => app.timer.change_to_rest(false),
                     KeyCode::Char('t') => app.timer.toggle_enabled(),
                     _ => {}
                 }
