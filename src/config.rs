@@ -44,14 +44,14 @@ impl Config {
             .parse::<i64>()
             .expect("Couldn't convert duration string into number");
 
-        let duration_rest = env::var(String::from("DURATION_WORK"));
-        let duration_rest = duration_rest.unwrap_or(String::from("25"));
+        let duration_rest = env::var(String::from("DURATION_REST"));
+        let duration_rest = duration_rest.unwrap_or(String::from("5"));
         let duration_rest = duration_rest
             .parse::<i64>()
             .expect("Couldn't convert duration string into number");
 
-        let duration_extend = env::var(String::from("DURATION_WORK"));
-        let duration_extend = duration_extend.unwrap_or(String::from("25"));
+        let duration_extend = env::var(String::from("DURATION_EXTEND"));
+        let duration_extend = duration_extend.unwrap_or(String::from("5"));
         let duration_extend = duration_extend
             .parse::<i64>()
             .expect("Couldn't convert duration string into number");
