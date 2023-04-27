@@ -15,8 +15,8 @@ You are either working or taking a break. So we have those two states in the rea
 - [x] add timer state
 - [x] toggle timer
 - [x] change timer state between work and rest
+- [-] save progress into a file on timer end
 - [ ] extend break or work
-- [ ] save progress into a file on timer end
 - [ ] make graph for statistics
 
 ## Env vars
@@ -41,7 +41,10 @@ DURATION_EXTEND=5
 # increase this to reduce cpu load
 TICK_RATE=1000
 # Statistics log file
-STAT_LOG_FILE=~/.fitimer.log
+CONFIG_DIR=.config/fitimer
+LOG_FILE=fitimer.log
+# Date format used throughout the application
+DATE_FORMAT="%Y-%m-%d %H:%M:%S %z"
 ```
 
 ## Features
