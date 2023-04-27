@@ -1,14 +1,10 @@
 # fitimer
 
-A timer to keep fit and healthy whilst having a sedentary working.
+A timer to keep fit and healthy whilst having a sedentary work.
 
 ## Simplicity
 
-You are either working or taking a break. So we have those two states in the real world. I used to use pomodoro timers for this, but this is simpler and has a nicer interface IMO.
-
-## How it works
-
-This is a TUI application with vim-like keybindigns.
+You are either working or taking a break. So we have those two states in the real world. I used to use pomodoro timers for this, but this is simpler and has a nicer interface for me.
 
 ## Todo
 
@@ -20,6 +16,8 @@ This is a TUI application with vim-like keybindigns.
 - [x] toggle timer
 - [x] change timer state between work and rest
 - [ ] extend break or work
+- [ ] save progress into a file on timer end
+- [ ] make graph for statistics
 
 ## Env vars
 
@@ -42,6 +40,8 @@ DURATION_EXTEND=5
 # How frequent app should get re-rendered
 # increase this to reduce cpu load
 TICK_RATE=1000
+# Statistics log file
+STAT_LOG_FILE=~/.fitimer.log
 ```
 
 ## Features

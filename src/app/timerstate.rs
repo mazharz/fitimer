@@ -1,6 +1,7 @@
+use chrono::{DateTime, Local};
 use notify_rust::Notification;
 
-use crate::{config::Config, expiry::Expiry};
+use crate::{config::Config, expiry::Expiry, fs::Fs};
 
 pub enum TimerType {
     Work,
@@ -34,7 +35,22 @@ impl TimerState {
         self.enabled = !self.enabled;
     }
 
+    fn save_stats(&self) {
+        let stat_file_path = Config::read().app.file_path;
+        // TODO: then store this & type & duration in a file
+        Fs::append_to_file(stat_file_path, "sdfj".to_string());
+        // let now = Local::now();
+        // let config = Config::read();
+        // let date_format = config.app.date_format.as_str();
+        // let now = now.format(date_format);
+        // println!("now: {}", now);
+
+        // later read it like this:
+        // let d = DateTime::parse_from_str("2023-03-21 12:27:36 +0330", date_format);
+    }
+
     pub fn toggle_work_rest(&mut self) {
+        self.save_stats();
         match self.timer_type {
             TimerType::Work => self.change_to_rest(true),
             TimerType::Rest => self.change_to_work(true),
@@ -66,6 +82,9 @@ impl TimerState {
     }
 
     pub fn check(&mut self) {
+        let stat_file_path = Config::read().app.file_path;
+        // TODO: then store this & type & duration in a file
+        Fs::append_to_file(stat_file_path, "sdfj".to_string());
         if !self.enabled {
             return ();
         };

@@ -10,6 +10,9 @@ pub struct Config {
 pub struct ConfigApp {
     pub tick_rate: u64,
     pub durations: ConfigDurations,
+    pub config_dir: String,
+    pub file_path: String,
+    pub date_format: String,
 }
 
 pub struct ConfigDurations {
@@ -56,6 +59,17 @@ impl Config {
             .parse::<i64>()
             .expect("Couldn't convert duration string into number");
 
+        let home_dir = env::var(String::from("HOME")).unwrap_or("/root".to_string());
+        let config_dir = env::var(String::from("CONFIG_DIR"));
+        let config_dir = config_dir.unwrap_or(String::from(".config/fitimer"));
+        let config_dir = format!("{}/{}", home_dir, config_dir);
+
+        let file_path = env::var(String::from("LOG_FILE"));
+        let file_path = file_path.unwrap_or(String::from("fitimer.log"));
+
+        let date_format = env::var(String::from("DATE_FORMAT"));
+        let date_format = date_format.unwrap_or(String::from("%Y-%m-%d %H:%M:%S %z"));
+
         Config {
             color: ConfigColor { gray, white, black },
             app: ConfigApp {
@@ -65,6 +79,9 @@ impl Config {
                     rest: duration_rest,
                     extend: duration_extend,
                 },
+                config_dir,
+                file_path,
+                date_format,
             },
         }
     }

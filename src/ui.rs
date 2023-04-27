@@ -9,9 +9,9 @@ use tui::{
 use crate::{app::timerstate::TimerType, config::Config, App};
 
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
-    let colors = Config::read();
-    let white = colors.color.white;
-    let gray = colors.color.gray;
+    let colors = Config::read().color;
+    let white = colors.white;
+    let gray = colors.gray;
 
     let chunks = Layout::default()
         .constraints([Constraint::Min(1), Constraint::Length(1)].as_ref())
