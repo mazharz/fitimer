@@ -22,7 +22,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     f.render_widget(empty_space_above, chunks[0]);
 
     let full_secs = app.timer.expiry.duration.as_secs();
-    let remaining_secs = app.timer.expiry.get();
+    let remaining_secs = app.timer.expiry.get_remaining();
 
     let progress = (remaining_secs as f64) * 100.0 / (full_secs as f64);
     let progress = if progress / 100.0 > 0.0 {

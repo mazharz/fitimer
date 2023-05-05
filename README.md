@@ -15,14 +15,14 @@ You are either working or taking a break. So we have those two states in the rea
 - [x] add timer state
 - [x] toggle timer
 - [x] change timer state between work and rest
-- [-] save progress into a file on timer end
+- [x] save progress into a file on toggle/change
 - [ ] extend break or work
 - [ ] make graph for statistics
 
 ## Env vars
 
 ```bash
-# These are gruvbox colors (all in hex code)
+# These are gruvbox colors
 COLOR_DARK="#282828"
 COLOR_GRAY="#928374"
 COLOR_LIGHT="#fbf1c7"
