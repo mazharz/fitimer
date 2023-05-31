@@ -31,4 +31,12 @@ impl Fs {
             File::create(file_full_path).unwrap();
         }
     }
+
+    pub fn read_file(file_path: String) -> String {
+        let config_dir = Config::read().app.config_dir;
+        let file_full_path = format!("{}/{}", config_dir, &file_path);
+        let contents = fs::read_to_string(&file_full_path)
+            .expect(&format!("Couldn't read file: {}", &file_full_path));
+        return contents;
+    }
 }

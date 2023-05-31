@@ -2,7 +2,9 @@ use tui::{
     backend::Backend,
     layout::{Constraint, Layout},
     style::{Modifier, Style},
-    widgets::{Gauge, Paragraph},
+    symbols,
+    text::Span,
+    widgets::{Axis, Block, Chart, Dataset, Gauge},
     Frame,
 };
 
@@ -12,14 +14,66 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let colors = Config::read().color;
     let white = colors.white;
     let gray = colors.gray;
+    let red = colors.red;
+    let green = colors.green;
 
     let chunks = Layout::default()
         .constraints([Constraint::Min(1), Constraint::Length(1)].as_ref())
         .split(f.size());
 
     let timer_state = &app.timer;
-    let empty_space_above = Paragraph::new(vec![]);
-    f.render_widget(empty_space_above, chunks[0]);
+    let stats = &app.timer.stat_data;
+    let work_data = stats.get_work_data();
+    let rest_data = stats.get_rest_data();
+    // println!("{:?}", work_data);
+    let datasets = vec![
+        Dataset::default()
+            .name("Work")
+            .marker(symbols::Marker::Dot)
+            .style(Style::default().fg(red))
+            .data(&work_data),
+        Dataset::default()
+            .name("Rest")
+            .marker(symbols::Marker::Dot)
+            .style(Style::default().fg(green))
+            .data(&rest_data),
+    ];
+    let x_labels = vec![
+        Span::styled(
+            format!("{}", 0.0),
+            Style::default().add_modifier(Modifier::BOLD),
+        ),
+        // Span::raw(format!("fix")),
+        Span::styled(
+            format!("{}", work_data.len()),
+            Style::default().add_modifier(Modifier::BOLD),
+        ),
+    ];
+    let stat_chart = Chart::new(datasets)
+        .block(Block::default())
+        .x_axis(
+            Axis::default()
+                .style(Style::default().fg(white))
+                .bounds([0.0, work_data.len() as f64])
+                .labels(x_labels),
+        )
+        .y_axis(
+            Axis::default()
+                .style(Style::default().fg(white))
+                .bounds([app.timer.stat_data.min, app.timer.stat_data.max])
+                .labels(vec![
+                    Span::styled(
+                        app.timer.stat_data.min.to_string(),
+                        Style::default().add_modifier(Modifier::BOLD),
+                    ),
+                    // Span::raw("0"),
+                    Span::styled(
+                        app.timer.stat_data.max.to_string(),
+                        Style::default().add_modifier(Modifier::BOLD),
+                    ),
+                ]),
+        );
+    f.render_widget(stat_chart, chunks[0]);
 
     let full_secs = app.timer.expiry.duration.as_secs();
     let remaining_secs = app.timer.expiry.get_remaining();

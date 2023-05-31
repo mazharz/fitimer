@@ -25,6 +25,9 @@ pub struct ConfigColor {
     pub gray: TColor,
     pub white: TColor,
     pub black: TColor,
+    pub yellow: TColor,
+    pub green: TColor,
+    pub red: TColor,
 }
 
 impl Config {
@@ -34,6 +37,15 @@ impl Config {
 
         let white = env::var("COLOR_LIGHT".to_string()).unwrap_or(String::from("#fbf1c7"));
         let white = Color::new(white);
+
+        let yellow = env::var("COLOR_YELLOW".to_string()).unwrap_or(String::from("#d79921"));
+        let yellow = Color::new(yellow);
+
+        let green = env::var("COLOR_GREEN".to_string()).unwrap_or(String::from("#98971a"));
+        let green = Color::new(green);
+
+        let red = env::var("COLOR_RED".to_string()).unwrap_or(String::from("#cc241d"));
+        let red = Color::new(red);
 
         let black = env::var("COLOR_DARK".to_string()).unwrap_or(String::from("#282828"));
         let black = Color::new(black);
@@ -71,7 +83,14 @@ impl Config {
         let date_format = date_format.unwrap_or(String::from("%Y-%m-%d %H:%M:%S %z"));
 
         Config {
-            color: ConfigColor { gray, white, black },
+            color: ConfigColor {
+                gray,
+                white,
+                black,
+                yellow,
+                green,
+                red,
+            },
             app: ConfigApp {
                 tick_rate,
                 durations: ConfigDurations {

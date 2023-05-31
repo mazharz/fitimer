@@ -18,6 +18,7 @@ You are either working or taking a break. So we have those two states in the rea
 - [x] save progress into a file on toggle/change
 - [ ] extend break or work
 - [ ] make graph for statistics
+- [ ] empty the config file on 1st of every year (when starting application)
 
 ## Env vars
 

@@ -1,9 +1,8 @@
-use std::fmt::Display;
-
-use chrono::Local;
-use notify_rust::Notification;
-
 use crate::{config::Config, expiry::Expiry, fs::Fs};
+use chrono::{DateTime, Local};
+use notify_rust::Notification;
+use std::collections::HashMap;
+use std::fmt::Display;
 
 pub enum TimerType {
     Work,
@@ -19,20 +18,126 @@ impl Display for TimerType {
     }
 }
 
+#[derive(Clone, Debug)]
+pub struct Stats {
+    pub work_data: Vec<(String, f64, f64)>,
+    pub rest_data: Vec<(String, f64, f64)>,
+    pub min: f64,
+    pub max: f64,
+    // pub first_day: String,
+    // pub last_day: String,
+}
+
+impl Stats {
+    fn init() -> Self {
+        let file_path = Config::read().app.file_path;
+        let contents = Fs::read_file(file_path);
+        let lines = contents.lines();
+        let mut data: HashMap<String, (i32, i32, i64)> = HashMap::new();
+        for line in lines {
+            let parts: Vec<&str> = line.split(",").collect();
+            let (date, timer_type, duration_secs) = (parts[0], parts[1], parts[2]);
+            let duration_secs = duration_secs
+                .parse::<i32>()
+                .expect("Couldn't parse duration in stats file");
+            let config = Config::read();
+            let date_format = config.app.date_format.as_str();
+            let date = DateTime::parse_from_str(date, date_format)
+                .expect("Couldn't parse date in stats file");
+            let y = date.format("%Y").to_string();
+            let now = Local::now();
+            let now_y = now.format("%Y").to_string();
+            if y != now_y {
+                continue;
+            }
+            let timestamp = date.timestamp();
+            let day = date.format("%m/%d").to_string();
+            if data.contains_key(&day) {
+                let fallback = &mut (0, 0, timestamp);
+                let current = data.get_mut(&day).unwrap_or(fallback);
+                if timer_type == "Work" {
+                    current.0 += duration_secs;
+                } else {
+                    current.1 += duration_secs;
+                }
+            } else {
+                data.insert(day, (0, 0, timestamp));
+            }
+        }
+        let mut work_data = data
+            .iter()
+            .map(|d| {
+                let key = d.0.clone() as String;
+                let value = d.1.clone();
+                return (key, value.0 as f64, value.2 as f64);
+            })
+            .collect::<Vec<(String, f64, f64)>>();
+        work_data.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap());
+        let mut rest_data = data
+            .iter()
+            .map(|d| {
+                let key = d.0.clone() as String;
+                let value = d.1.clone();
+                return (key, value.1 as f64, value.2 as f64);
+            })
+            .collect::<Vec<(String, f64, f64)>>();
+        rest_data.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap());
+        let first_day = &work_data[0].0;
+        let last_day = &work_data[&work_data.len() - 1].0;
+        let mut max = 0.0;
+        for wd in work_data.iter() {
+            if wd.1 > max {
+                max = wd.1;
+            }
+        }
+        let min = 0.0;
+
+        return Stats {
+            work_data,
+            rest_data,
+            min,
+            max,
+            // first_day: first_day.to_string(),
+            // last_day: last_day.to_string(),
+        };
+    }
+
+    pub fn get_work_data(&self) -> Vec<(f64, f64)> {
+        let wd = &self.work_data;
+        return wd
+            .iter()
+            .enumerate()
+            .map(|(index, item)| (index as f64, item.1))
+            .collect();
+    }
+
+    pub fn get_rest_data(&self) -> Vec<(f64, f64)> {
+        let rd = &self.rest_data;
+        return rd
+            .iter()
+            .enumerate()
+            .map(|(index, item)| (index as f64, item.1))
+            .collect();
+    }
+}
+
 pub struct TimerState {
     pub enabled: bool,
     pub expiry: Expiry,
     pub timer_type: TimerType,
+    pub stat_data: Stats,
 }
 
 impl TimerState {
     pub fn new(enabled: bool) -> TimerState {
         let expiry = TimerState::get_work_expiry();
+        let stat_data = Stats::init();
 
         TimerState {
             enabled,
             expiry,
             timer_type: TimerType::Work,
+            stat_data,
         }
     }
 
