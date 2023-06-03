@@ -5,6 +5,7 @@ pub mod env;
 pub mod expiry;
 pub mod formatter;
 pub mod fs;
+pub mod stats;
 pub mod ui;
 
 use app::App;

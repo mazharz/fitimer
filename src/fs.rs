@@ -1,5 +1,5 @@
 use std::fs::{self, File, OpenOptions};
-use std::io::prelude::*;
+use std::io::{prelude::*, BufReader};
 use std::path::Path;
 
 use crate::config::Config;
@@ -32,11 +32,16 @@ impl Fs {
         }
     }
 
-    pub fn read_file(file_path: String) -> String {
+    pub fn read_file(file_path: String) -> Vec<String> {
         let config_dir = Config::read().app.config_dir;
         let file_full_path = format!("{}/{}", config_dir, &file_path);
-        let contents = fs::read_to_string(&file_full_path)
-            .expect(&format!("Couldn't read file: {}", &file_full_path));
-        return contents;
+        let file =
+            File::open(&file_full_path).expect(&format!("Couldn't read file: {}", &file_full_path));
+        let reader = BufReader::new(file);
+        let lines = reader
+            .lines()
+            .collect::<Result<Vec<String>, _>>()
+            .expect(&format!("Couldn't parse file lines: {}", &file_full_path));
+        return lines;
     }
 }

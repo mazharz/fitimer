@@ -12,6 +12,7 @@ use crate::{app::timerstate::TimerType, config::Config, App};
 
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let colors = Config::read().color;
+    let black = colors.black;
     let white = colors.white;
     let gray = colors.gray;
     let red = colors.red;
@@ -38,38 +39,26 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
             .style(Style::default().fg(green))
             .data(&rest_data),
     ];
-    let x_labels = vec![
-        Span::styled(
-            format!("{}", 0.0),
-            Style::default().add_modifier(Modifier::BOLD),
-        ),
-        // Span::raw(format!("fix")),
-        Span::styled(
-            format!("{}", work_data.len()),
-            Style::default().add_modifier(Modifier::BOLD),
-        ),
-    ];
     let stat_chart = Chart::new(datasets)
         .block(Block::default())
         .x_axis(
             Axis::default()
-                .style(Style::default().fg(white))
-                .bounds([0.0, work_data.len() as f64])
-                .labels(x_labels),
+                .style(Style::default())
+                .bounds([0.0, work_data.len() as f64]),
         )
         .y_axis(
             Axis::default()
-                .style(Style::default().fg(white))
+                .style(Style::default().fg(black))
                 .bounds([app.timer.stat_data.min, app.timer.stat_data.max])
                 .labels(vec![
                     Span::styled(
-                        app.timer.stat_data.min.to_string(),
-                        Style::default().add_modifier(Modifier::BOLD),
+                        (app.timer.stat_data.min / 3600.0).ceil().to_string(),
+                        Style::default().fg(gray),
                     ),
                     // Span::raw("0"),
                     Span::styled(
-                        app.timer.stat_data.max.to_string(),
-                        Style::default().add_modifier(Modifier::BOLD),
+                        (app.timer.stat_data.max / 3600.0).ceil().to_string(),
+                        Style::default().fg(gray),
                     ),
                 ]),
         );
