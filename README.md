@@ -16,9 +16,9 @@ You are either working or taking a break. So we have those two states in the rea
 - [x] toggle timer
 - [x] change timer state between work and rest
 - [x] save progress into a file on toggle/change
+- [x] make graph for statistics
 - [ ] extend break or work
-- [ ] make graph for statistics
-- [ ] empty the config file on 1st of every year (when starting application)
+- [ ] empty the stat file on 1st of every year (when starting application)
 
 ## Env vars
 
