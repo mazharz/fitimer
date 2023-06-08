@@ -75,7 +75,7 @@ impl TimerState {
         if show_notification {
             Notification::new()
                 .summary("Fitimer")
-                .body("It's time to get back to work!")
+                .body("🔴 Back to work!")
                 .show()
                 .unwrap();
         }
@@ -88,7 +88,7 @@ impl TimerState {
         if show_notification {
             Notification::new()
                 .summary("Fitimer")
-                .body("It's time to take a break!")
+                .body("🟢 Take a break!")
                 .show()
                 .unwrap();
         }
