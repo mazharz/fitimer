@@ -8,8 +8,6 @@ pub struct Stats {
     pub rest_data: Vec<(String, f64, f64)>,
     pub min: f64,
     pub max: f64,
-    // pub first_day: String,
-    // pub last_day: String,
 }
 
 impl Stats {
@@ -33,13 +31,15 @@ impl Stats {
                     current.1 += duration_secs;
                 }
             } else {
-                data.insert(day, (0, 0, timestamp));
+                if timer_type == "Work" {
+                    data.insert(day, (duration_secs, 0, timestamp));
+                } else {
+                    data.insert(day, (0, duration_secs, timestamp));
+                }
             }
         }
         let work_data = Self::get_formatted_data(&data, |tuple| tuple.0);
         let rest_data = Self::get_formatted_data(&data, |tuple| tuple.1);
-        // let first_day = &work_data[0].0;
-        // let last_day = &work_data[&work_data.len() - 1].0;
         let mut max = 0.0;
         for wd in work_data.iter() {
             if wd.1 > max {
@@ -53,8 +53,6 @@ impl Stats {
             rest_data,
             min,
             max,
-            // first_day: first_day.to_string(),
-            // last_day: last_day.to_string(),
         };
     }
 
