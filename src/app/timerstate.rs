@@ -44,6 +44,9 @@ impl TimerState {
     }
 
     pub fn toggle_enabled(&mut self) {
+        if self.enabled {
+            self.save_stats();
+        }
         self.reset();
         self.enabled = !self.enabled;
     }
