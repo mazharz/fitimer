@@ -1,10 +1,9 @@
 use tui::{
     backend::Backend,
     layout::{Constraint, Layout},
-    style::{Modifier, Style},
+    style::{Color, Modifier, Style},
     symbols,
-    text::Span,
-    widgets::{Axis, Block, Chart, Dataset, Gauge},
+    widgets::{Axis, Block, Chart, Dataset, Gauge, GraphType},
     Frame,
 };
 
@@ -13,8 +12,6 @@ use crate::{app::timerstate::TimerType, config::Config, App};
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let colors = Config::read().color;
     let black = colors.black;
-    let white = colors.white;
-    let gray = colors.gray;
     let red = colors.red;
     let green = colors.green;
 
@@ -26,17 +23,16 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let stats = &app.timer.stat_data;
     let work_data = stats.get_work_data();
     let rest_data = stats.get_rest_data();
-    // println!("{:?}", work_data);
     let datasets = vec![
         Dataset::default()
-            .name("Work")
-            .marker(symbols::Marker::Dot)
+            .marker(symbols::Marker::Braille)
             .style(Style::default().fg(red))
+            .graph_type(GraphType::Line)
             .data(&work_data),
         Dataset::default()
-            .name("Rest")
-            .marker(symbols::Marker::Dot)
+            .marker(symbols::Marker::Braille)
             .style(Style::default().fg(green))
+            .graph_type(GraphType::Line)
             .data(&rest_data),
     ];
     let stat_chart = Chart::new(datasets)
@@ -44,23 +40,12 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         .x_axis(
             Axis::default()
                 .style(Style::default())
-                .bounds([0.0, work_data.len() as f64]),
+                .bounds([0.0, (work_data.len() - 1) as f64]),
         )
         .y_axis(
             Axis::default()
                 .style(Style::default().fg(black))
-                .bounds([app.timer.stat_data.min, app.timer.stat_data.max])
-                .labels(vec![
-                    Span::styled(
-                        (app.timer.stat_data.min / 3600.0).ceil().to_string(),
-                        Style::default().fg(gray),
-                    ),
-                    // Span::raw("0"),
-                    Span::styled(
-                        (app.timer.stat_data.max / 3600.0).ceil().to_string(),
-                        Style::default().fg(gray),
-                    ),
-                ]),
+                .bounds([app.timer.stat_data.min, app.timer.stat_data.max]),
         );
     f.render_widget(stat_chart, chunks[0]);
 
@@ -85,14 +70,34 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     } else {
         String::from("Disabled")
     };
+    let guage_colors = get_guage_colors(&app.timer.timer_type, app.timer.enabled);
     let timer_progress = Gauge::default()
         .gauge_style(
             Style::default()
-                .fg(white)
-                .bg(gray)
+                .fg(guage_colors.0)
+                .bg(guage_colors.1)
                 .add_modifier(Modifier::BOLD),
         )
         .label(progress_label)
         .ratio(progress);
     f.render_widget(timer_progress, chunks[1]);
+}
+
+fn get_guage_colors(timer_type: &TimerType, is_enabled: bool) -> (Color, Color) {
+    let colors = Config::read().color;
+    let gray = colors.gray;
+    let red = colors.red;
+    let green = colors.green;
+    let black = colors.black;
+
+    if !is_enabled {
+        return (black, gray);
+    }
+
+    match timer_type {
+        TimerType::Work => {
+            return (red, black);
+        }
+        _ => return (green, black),
+    }
 }
