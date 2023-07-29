@@ -1,11 +1,13 @@
-use self::{stat::Stat, timer::Timer};
+use self::{help::Help, stat::Stat, timer::Timer};
 
+pub mod help;
 pub mod stat;
 pub mod timer;
 
 pub struct App {
     pub timer: Timer,
     pub stat: Stat,
+    pub help: Help,
 }
 
 impl App {
@@ -13,6 +15,7 @@ impl App {
         App {
             timer: Timer::new(false),
             stat: Stat::init(),
+            help: Help::new(),
         }
     }
 

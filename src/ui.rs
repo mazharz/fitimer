@@ -1,13 +1,19 @@
 use tui::{
     backend::Backend,
-    layout::{Constraint, Layout},
+    layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     symbols,
-    widgets::{Axis, Block, Chart, Dataset, Gauge, GraphType},
+    text::Spans,
+    widgets::{Axis, Block, Borders, Chart, Clear, Dataset, Gauge, GraphType, Paragraph},
     Frame,
 };
 
-use crate::{app::timer::TimerType, config::Config, App};
+use crate::{
+    app::timer::TimerType,
+    config::Config,
+    keys::{Key, Keys},
+    App,
+};
 
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let colors = Config::read().color;
@@ -81,6 +87,64 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         .label(progress_label)
         .ratio(progress);
     f.render_widget(timer_progress, chunks[1]);
+
+    if app.help.is_open {
+        draw_help_text(f, app);
+    }
+}
+
+fn draw_help_text<B: Backend>(f: &mut Frame<B>, app: &App) {
+    let block = Block::default().title("Shortcuts").borders(Borders::ALL);
+    let area = centered_rect(50, 50, f.size());
+    f.render_widget(Clear, area); //this clears out the background
+    f.render_widget(block, area);
+
+    let chunks = Layout::default()
+        .constraints([Constraint::Percentage(100)].as_ref())
+        .vertical_margin(2)
+        .horizontal_margin(4)
+        .split(area);
+
+    let keys = Keys::get();
+    let mut keys: Vec<Key> = keys.values().cloned().collect();
+    keys.sort_by_key(|k| k.order);
+    let mut text: Vec<Spans> = vec![];
+    for value in keys {
+        text.push(Spans::from(
+            String::from(value.key)
+                + &String::from(" => ")
+                + &String::from(value.description.clone()),
+        ));
+    }
+
+    let paragraph = Paragraph::new(text);
+    f.render_widget(paragraph, chunks[0])
+}
+
+fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
+    let popup_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints(
+            [
+                Constraint::Percentage((100 - percent_y) / 2),
+                Constraint::Percentage(percent_y),
+                Constraint::Percentage((100 - percent_y) / 2),
+            ]
+            .as_ref(),
+        )
+        .split(r);
+
+    Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints(
+            [
+                Constraint::Percentage((100 - percent_x) / 2),
+                Constraint::Percentage(percent_x),
+                Constraint::Percentage((100 - percent_x) / 2),
+            ]
+            .as_ref(),
+        )
+        .split(popup_layout[1])[1]
 }
 
 fn get_guage_colors(timer_type: &TimerType, is_enabled: bool) -> (Color, Color) {

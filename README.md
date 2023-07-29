@@ -54,7 +54,7 @@ FITIMER_DATE_FORMAT="%Y-%m-%d %H:%M:%S %z"
 - [x] change timer state between work and rest
 - [x] save progress into a file on toggle/change
 - [x] make graph for statistics
-- [ ] add help menu for shortcuts
+- [x] add help menu for shortcuts
 - [ ] add settings page
 - [ ] add option to disable graph (prevents setting into file too)
 - [ ] add option to delete stat file content

@@ -5,6 +5,7 @@ pub mod env;
 pub mod expiry;
 pub mod formatter;
 pub mod fs;
+pub mod keys;
 pub mod ui;
 
 use app::App;
@@ -14,6 +15,7 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
+use keys::Keys;
 use std::{
     error::Error,
     io,
@@ -68,14 +70,20 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<(
 
         app.timer.check();
 
+        let keys = Keys::get();
+
         if event::poll(timeout)? {
             if let Event::Key(key) = event::read()? {
-                match key.code {
-                    KeyCode::Char('q') => return Ok(()),
-                    KeyCode::Char('w') => app.timer.change_to_work(false),
-                    KeyCode::Char('r') => app.timer.change_to_rest(false),
-                    KeyCode::Char('t') => app.timer.toggle_enabled(),
-                    _ => {}
+                if key.code == KeyCode::Char(keys.get("quit").unwrap().key) {
+                    return Ok(());
+                } else if key.code == KeyCode::Char(keys.get("work").unwrap().key) {
+                    app.timer.change_to_work(false);
+                } else if key.code == KeyCode::Char(keys.get("rest").unwrap().key) {
+                    app.timer.change_to_rest(false);
+                } else if key.code == KeyCode::Char(keys.get("toggle_enabled").unwrap().key) {
+                    app.timer.toggle_enabled();
+                } else if key.code == KeyCode::Char(keys.get("toggle_help_popup").unwrap().key) {
+                    app.help.toggle_is_open();
                 }
             }
         }
