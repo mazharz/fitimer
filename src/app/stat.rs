@@ -3,14 +3,14 @@ use chrono::{DateTime, FixedOffset, Local};
 use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
-pub struct Stats {
+pub struct Stat {
     pub work_data: Vec<(String, f64, f64)>,
     pub rest_data: Vec<(String, f64, f64)>,
     pub min: f64,
     pub max: f64,
 }
 
-impl Stats {
+impl Stat {
     pub fn init() -> Self {
         let mut data: HashMap<String, (i32, i32, i64)> = HashMap::new();
         let lines = Self::get_raw_lines();
@@ -48,7 +48,7 @@ impl Stats {
         }
         let min = 0.0;
 
-        return Stats {
+        return Stat {
             work_data,
             rest_data,
             min,

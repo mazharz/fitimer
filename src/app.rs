@@ -1,15 +1,18 @@
-use self::timerstate::TimerState;
+use self::{stat::Stat, timer::Timer};
 
-pub mod timerstate;
+pub mod stat;
+pub mod timer;
 
 pub struct App {
-    pub timer: TimerState,
+    pub timer: Timer,
+    pub stat: Stat,
 }
 
 impl App {
     pub fn new() -> App {
         App {
-            timer: TimerState::new(false),
+            timer: Timer::new(false),
+            stat: Stat::init(),
         }
     }
 

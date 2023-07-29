@@ -1,4 +1,3 @@
-use crate::stats::Stats;
 use crate::{config::Config, expiry::Expiry, fs::Fs};
 use chrono::Local;
 use notify_rust::Notification;
@@ -18,28 +17,25 @@ impl Display for TimerType {
     }
 }
 
-pub struct TimerState {
+pub struct Timer {
     pub enabled: bool,
     pub expiry: Expiry,
     pub timer_type: TimerType,
-    pub stat_data: Stats,
 }
 
-impl TimerState {
-    pub fn new(enabled: bool) -> TimerState {
-        let expiry = TimerState::get_work_expiry();
-        let stat_data = Stats::init();
+impl Timer {
+    pub fn new(enabled: bool) -> Timer {
+        let expiry = Timer::get_work_expiry();
 
-        TimerState {
+        Timer {
             enabled,
             expiry,
             timer_type: TimerType::Work,
-            stat_data,
         }
     }
 
     fn reset(&mut self) {
-        self.expiry = TimerState::get_work_expiry();
+        self.expiry = Timer::get_work_expiry();
         self.timer_type = TimerType::Work;
     }
 
@@ -71,7 +67,7 @@ impl TimerState {
     pub fn change_to_work(&mut self, show_notification: bool) {
         self.save_stats();
         self.timer_type = TimerType::Work;
-        self.expiry = TimerState::get_work_expiry();
+        self.expiry = Timer::get_work_expiry();
         if show_notification {
             Notification::new()
                 .summary("Fitimer")
@@ -84,7 +80,7 @@ impl TimerState {
     pub fn change_to_rest(&mut self, show_notification: bool) {
         self.save_stats();
         self.timer_type = TimerType::Rest;
-        self.expiry = TimerState::get_rest_expiry();
+        self.expiry = Timer::get_rest_expiry();
         if show_notification {
             Notification::new()
                 .summary("Fitimer")

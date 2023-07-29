@@ -7,7 +7,7 @@ use tui::{
     Frame,
 };
 
-use crate::{app::timerstate::TimerType, config::Config, App};
+use crate::{app::timer::TimerType, config::Config, App};
 
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     let colors = Config::read().color;
@@ -20,7 +20,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         .split(f.size());
 
     let timer_state = &app.timer;
-    let stats = &app.timer.stat_data;
+    let stats = &app.stat;
     let work_data = stats.get_work_data();
     let rest_data = stats.get_rest_data();
     let datasets = vec![
@@ -45,7 +45,7 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
         .y_axis(
             Axis::default()
                 .style(Style::default().fg(black))
-                .bounds([app.timer.stat_data.min, app.timer.stat_data.max]),
+                .bounds([app.stat.min, app.stat.max]),
         );
     f.render_widget(stat_chart, chunks[0]);
 
