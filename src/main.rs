@@ -27,6 +27,16 @@ use tui::{
 };
 use ui::draw;
 
+use crate::config::StaticConfig;
+
+#[macro_use]
+extern crate lazy_static;
+
+lazy_static! {
+    static ref CONFIG: Config = Config::init();
+    static ref STATIC_CONFIG: StaticConfig = Config::init_static();
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     // setup terminal
     enable_raw_mode()?;
@@ -56,7 +66,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> io::Result<()> {
-    let tick_rate = Config::read().app.tick_rate;
+    let tick_rate = CONFIG.tick_rate;
     let tick_rate = Duration::from_millis(tick_rate);
 
     let mut last_tick = Instant::now();

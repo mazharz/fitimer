@@ -1,4 +1,4 @@
-use crate::{config::Config, expiry::Expiry, fs::Fs};
+use crate::{expiry::Expiry, fs::Fs, CONFIG, STATIC_CONFIG};
 use chrono::Local;
 use notify_rust::Notification;
 use std::fmt::Display;
@@ -48,10 +48,9 @@ impl Timer {
     }
 
     fn save_stats(&self) {
-        let stat_file_path = Config::read().app.file_path;
+        let stat_file_path = STATIC_CONFIG.file_path.clone();
         let now = Local::now();
-        let config = Config::read();
-        let date_format = config.app.date_format.as_str();
+        let date_format = CONFIG.date_format.as_str();
         let now = now.format(date_format);
         let formatted_data = format!("{},{},{}", now, self.timer_type, self.expiry.get_elapsed());
         Fs::append_to_file(stat_file_path, formatted_data);
@@ -101,14 +100,14 @@ impl Timer {
     }
 
     fn get_work_expiry() -> Expiry {
-        let work = Config::read().app.durations.work;
+        let work = CONFIG.durations.work;
         let work = Expiry::new(work);
 
         return work;
     }
 
     fn get_rest_expiry() -> Expiry {
-        let rest = Config::read().app.durations.rest;
+        let rest = CONFIG.durations.rest;
         let rest = Expiry::new(rest);
 
         return rest;

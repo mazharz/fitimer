@@ -10,16 +10,14 @@ use tui::{
 
 use crate::{
     app::timer::TimerType,
-    config::Config,
     keys::{Key, Keys},
-    App,
+    App, CONFIG,
 };
 
 pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
-    let colors = Config::read().color;
-    let black = colors.black;
-    let red = colors.red;
-    let green = colors.green;
+    let black = CONFIG.get_colors().black;
+    let red = CONFIG.get_colors().red;
+    let green = CONFIG.get_colors().green;
 
     let chunks = Layout::default()
         .constraints([Constraint::Min(1), Constraint::Length(1)].as_ref())
@@ -89,11 +87,11 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
     f.render_widget(timer_progress, chunks[1]);
 
     if app.help.is_open {
-        draw_help_text(f, app);
+        draw_help_text(f);
     }
 }
 
-fn draw_help_text<B: Backend>(f: &mut Frame<B>, app: &App) {
+fn draw_help_text<B: Backend>(f: &mut Frame<B>) {
     let block = Block::default().title("Shortcuts").borders(Borders::ALL);
     let area = centered_rect(50, 50, f.size());
     f.render_widget(Clear, area); //this clears out the background
@@ -148,11 +146,10 @@ fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
 }
 
 fn get_guage_colors(timer_type: &TimerType, is_enabled: bool) -> (Color, Color) {
-    let colors = Config::read().color;
-    let gray = colors.gray;
-    let red = colors.red;
-    let green = colors.green;
-    let black = colors.black;
+    let gray = CONFIG.get_colors().gray;
+    let red = CONFIG.get_colors().red;
+    let green = CONFIG.get_colors().green;
+    let black = CONFIG.get_colors().black;
 
     if !is_enabled {
         return (black, gray);

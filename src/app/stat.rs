@@ -1,4 +1,4 @@
-use crate::{config::Config, fs::Fs};
+use crate::{fs::Fs, CONFIG, STATIC_CONFIG};
 use chrono::{DateTime, FixedOffset, Local};
 use std::collections::HashMap;
 
@@ -75,7 +75,7 @@ impl Stat {
     }
 
     fn get_raw_lines() -> Vec<String> {
-        let file_path = Config::read().app.file_path;
+        let file_path = STATIC_CONFIG.file_path.clone();
         let lines = Fs::read_file(file_path);
         return lines;
     }
@@ -86,8 +86,7 @@ impl Stat {
         let duration_secs = duration_secs
             .parse::<i32>()
             .expect("Couldn't parse duration in stats file");
-        let config = Config::read();
-        let date_format = config.app.date_format.as_str();
+        let date_format = CONFIG.date_format.as_str();
         let date =
             DateTime::parse_from_str(date, date_format).expect("Couldn't parse date in stats file");
 

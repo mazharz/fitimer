@@ -17,33 +17,35 @@ $ cargo install fitimer
 - desktop notifications
 - customizable colors
 
-## Env vars
+## Configuration
 
-Fitimer is configurable through environment variables, you can put these in your `~/.bashrc` or `~/.zshrc`:
+Fitimer is configurable through a json file, here is the default config located at `$HOME/.config/fitimer/config.json`:
 
-```bash
-# These are gruvbox colors
-FITIMER_COLOR_DARK="#282828"
-FITIMER_COLOR_GRAY="#928374"
-FITIMER_COLOR_LIGHT="#fbf1c7"
-FITIMER_COLOR_RED="#cc241d"
-FITIMER_COLOR_GREEN="#98971a"
-FITIMER_COLOR_YELLOW="#d79921"
-FITIMER_COLOR_BLUE="#458588"
-FITIMER_COLOR_PURPLE="#b16286"
-FITIMER_COLOR_AQUA="#689d6a"
-FITIMER_COLOR_ORANGE="#d65d0e"
-# Durations are in mins
-FITIMER_DURATION_WORK=25
-FITIMER_DURATION_REST=5
-# How frequent app should get re-rendered
-# increase this to reduce CPU load
-FITIMER_TICK_RATE=1000
-# Statistics log file
-FITIMER_CONFIG_DIR=.config/fitimer
-FITIMER_LOG_FILE=fitimer.log
-# Date format used throughout the application
-FITIMER_DATE_FORMAT="%Y-%m-%d %H:%M:%S %z"
+- Default colors use the `gruvbox` color pallete.
+- Durations are in minutes
+- tick rate (in milliseconds) means how frequent the app should get re-rendered (increase this to reduce CPU load)
+
+```json
+{
+  "tick_rate": 1000,
+  "date_format": "%Y-%m-%d %H:%M:%S %z",
+  "durations": {
+    "work": 25,
+    "rest": 5
+  },
+  "color": {
+    "black": "#282828",
+    "white": "#fbf1c7",
+    "gray": "#928374",
+    "yellow": "#d79921",
+    "green": "#98971a",
+    "red": "#cc241d",
+    "blue": "#458588",
+    "purple": "#b16286",
+    "aqua": "#689d6a",
+    "orange": "#d65d0e"
+  }
+}
 ```
 
 ## Todo
@@ -55,6 +57,9 @@ FITIMER_DATE_FORMAT="%Y-%m-%d %H:%M:%S %z"
 - [x] save progress into a file on toggle/change
 - [x] make graph for statistics
 - [x] add help menu for shortcuts
-- [ ] add settings page
+- [x] remove env vars and use json config file
+- [ ] remove option to configure date and move to static config
+- [ ] move the stat file into somewhere appropriate other than .config
+- [ ] add settings page?
 - [ ] add option to disable graph (prevents setting into file too)
 - [ ] add option to delete stat file content
