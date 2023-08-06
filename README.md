@@ -30,7 +30,6 @@ Fitimer is configurable through a json file, here is the default config located 
 ```json
 {
   "tick_rate": 1000,
-  "date_format": "%Y-%m-%d %H:%M:%S %z",
   "durations": {
     "work": 25,
     "rest": 5
@@ -60,7 +59,7 @@ Fitimer is configurable through a json file, here is the default config located 
 - [x] make graph for statistics
 - [x] add help menu for shortcuts
 - [x] remove env vars and use json config file
-- [ ] remove option to configure date and move to static config
+- [x] remove option to configure date and move to static config
 - [ ] move the stat file into somewhere appropriate other than .config
 - [ ] add settings page?
 - [ ] add option to disable graph (prevents setting into file too)

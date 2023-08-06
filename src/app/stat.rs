@@ -1,4 +1,4 @@
-use crate::{fs::Fs, CONFIG, STATIC_CONFIG};
+use crate::{fs::Fs, STATIC_CONFIG};
 use chrono::{DateTime, FixedOffset, Local};
 use std::collections::HashMap;
 
@@ -86,7 +86,7 @@ impl Stat {
         let duration_secs = duration_secs
             .parse::<i32>()
             .expect("Couldn't parse duration in stats file");
-        let date_format = CONFIG.date_format.as_str();
+        let date_format = STATIC_CONFIG.date_format.as_str();
         let date =
             DateTime::parse_from_str(date, date_format).expect("Couldn't parse date in stats file");
 

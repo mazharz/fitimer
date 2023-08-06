@@ -50,7 +50,7 @@ impl Timer {
     fn save_stats(&self) {
         let stat_file_path = STATIC_CONFIG.file_path.clone();
         let now = Local::now();
-        let date_format = CONFIG.date_format.as_str();
+        let date_format = STATIC_CONFIG.date_format.as_str();
         let now = now.format(date_format);
         let formatted_data = format!("{},{},{}", now, self.timer_type, self.expiry.get_elapsed());
         Fs::append_to_file(stat_file_path, formatted_data);

@@ -7,6 +7,7 @@ use tui::style::Color as TColor;
 pub struct StaticConfig {
     pub config_dir: String,
     pub file_path: String,
+    pub date_format: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -14,7 +15,6 @@ pub struct Config {
     pub color: ConfigColor,
     pub tick_rate: u64,
     pub durations: ConfigDurations,
-    pub date_format: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -48,12 +48,7 @@ impl Config {
         // TODO: think about this following error message, try it out for different circumstances
         let config_json: Config = serde_json::from_str(&config_str)
             .expect("Either config file is not valid json, or it lacks certain fields.");
-        return Config {
-            color: config_json.color,
-            tick_rate: config_json.tick_rate,
-            durations: config_json.durations,
-            date_format: config_json.date_format,
-        };
+        return config_json;
     }
 
     pub fn init_static() -> StaticConfig {
@@ -65,6 +60,7 @@ impl Config {
             // TODO: rename to log_file or sth better
             file_path: String::from("fitimer.log"),
             config_dir,
+            date_format: String::from("%Y-%m-%d %H:%M:%S %z"),
         };
     }
 
