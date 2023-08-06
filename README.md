@@ -6,6 +6,8 @@ A timer to keep fit and healthy whilst having a sedentary work.
 
 You are either working or taking a break. So we have those two states in the real world. I used to use pomodoro timers for this, but this is simpler and has a nicer interface for me.
 
+![Screenshot of fitimer in work state](./fitimer.png)
+
 ## How to install
 
 ```bash
