@@ -1,55 +1,50 @@
 use std::fs::{self, File, OpenOptions};
 use std::io::{prelude::*, BufReader};
-use std::path::Path;
-
-use crate::STATIC_CONFIG;
+use std::path::{Path, PathBuf};
 
 pub struct Fs;
 
 impl Fs {
-    // TODO: think about refactoring this
-    pub fn append_to_file(file_path: String, content: String) {
-        let config_dir = STATIC_CONFIG.config_dir.clone();
-        let file_full_path = format!("{}/{}", config_dir, &file_path);
-        Fs::create_file_if_does_not_exist(&file_path);
+    pub fn append_to_file(path: String, content: String) {
+        Fs::create_file_if_does_not_exist(&path);
         let mut file = OpenOptions::new()
             .write(true)
             .append(true)
-            .open(file_full_path)
+            .open(path)
             .unwrap();
         if let Err(e) = writeln!(file, "{}", content) {
             eprintln!("Couldn't write to file: {}", e);
         }
     }
 
-    pub fn create_file_if_does_not_exist(file_path: &String) {
-        let config_dir = STATIC_CONFIG.config_dir.clone();
-        fs::create_dir_all(&config_dir).expect("Couldn't create directory");
-        let file_full_path = format!("{}/{}", config_dir, &file_path);
-        let file_exists = Path::new(&file_full_path).exists();
+    fn create_file_if_does_not_exist(path: &String) {
+        let path = PathBuf::from(path);
+        let dir = path.parent().unwrap().to_str().unwrap();
+        fs::create_dir_all(&dir).expect("Couldn't create directory");
+        let file_exists = Path::new(&path).exists();
         if !file_exists {
-            File::create(file_full_path).unwrap();
+            File::create(path).unwrap();
         }
     }
 
-    pub fn read_file(file_path: String) -> Vec<String> {
-        let config_dir = STATIC_CONFIG.config_dir.clone();
-        let file_full_path = format!("{}/{}", config_dir, &file_path);
-        let file =
-            File::open(&file_full_path).expect(&format!("Couldn't read file: {}", &file_full_path));
+    pub fn read_file(path: String) -> Result<Vec<String>, String> {
+        let file = match File::open(&path) {
+            Ok(file) => file,
+            Err(_) => {
+                let err = format!("Couldn't read file: {}", &path);
+                return Err(err);
+            }
+        };
         let reader = BufReader::new(file);
         let lines = reader
             .lines()
             .collect::<Result<Vec<String>, _>>()
-            .expect(&format!("Couldn't parse file lines: {}", &file_full_path));
-        return lines;
+            .expect(&format!("Couldn't parse file lines: {}", &path));
+        return Ok(lines);
     }
 
-    pub fn read_file_str(file_path: String) -> String {
-        let config_dir = STATIC_CONFIG.config_dir.clone();
-        let file_full_path = format!("{}/{}", config_dir, &file_path);
-        let mut file =
-            File::open(&file_full_path).expect(&format!("Couldn't read file: {}", &file_full_path));
+    pub fn read_file_str(path: String) -> String {
+        let mut file = File::open(&path).expect(&format!("Couldn't read file: {}", &path));
         let mut file_contents = String::new();
         file.read_to_string(&mut file_contents)
             .expect("Couldn't read file contents.");

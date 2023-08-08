@@ -39,12 +39,17 @@ pub fn draw<B: Backend>(f: &mut Frame<B>, app: &App) {
             .graph_type(GraphType::Line)
             .data(&rest_data),
     ];
+    let upper_bound = if work_data.len() > 0 {
+        (work_data.len() - 1) as f64
+    } else {
+        0 as f64
+    };
     let stat_chart = Chart::new(datasets)
         .block(Block::default())
         .x_axis(
             Axis::default()
                 .style(Style::default())
-                .bounds([0.0, (work_data.len() - 1) as f64]),
+                .bounds([0.0, upper_bound]),
         )
         .y_axis(
             Axis::default()

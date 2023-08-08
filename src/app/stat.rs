@@ -75,9 +75,9 @@ impl Stat {
     }
 
     fn get_raw_lines() -> Vec<String> {
-        let file_path = STATIC_CONFIG.file_path.clone();
+        let file_path = STATIC_CONFIG.stat_file.clone();
         let lines = Fs::read_file(file_path);
-        return lines;
+        return lines.unwrap_or_default();
     }
 
     fn get_parsed_line_elements<'a>(line: &'a String) -> (DateTime<FixedOffset>, &'a str, i32) {

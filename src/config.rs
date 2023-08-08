@@ -5,8 +5,8 @@ use tui::style::Color as TColor;
 
 #[derive(Debug)]
 pub struct StaticConfig {
-    pub config_dir: String,
-    pub file_path: String,
+    pub stat_file: String,
+    pub config_file: String,
     pub date_format: String,
 }
 
@@ -44,7 +44,7 @@ pub struct ConfigTuiColor {
 
 impl Config {
     pub fn init() -> Config {
-        let config_str = Fs::read_file_str(String::from("config.json"));
+        let config_str = Fs::read_file_str(Config::init_static().config_file);
         // TODO: think about this following error message, try it out for different circumstances
         let config_json: Config = serde_json::from_str(&config_str)
             .expect("Either config file is not valid json, or it lacks certain fields.");
@@ -53,13 +53,20 @@ impl Config {
 
     pub fn init_static() -> StaticConfig {
         let home_dir = env::var(String::from("HOME")).unwrap_or("/root".to_string());
-        let config_dir = String::from(".config/fitimer");
-        let config_dir = format!("{}/{}", home_dir, config_dir);
+        let config_file = format!(
+            "{}/{}",
+            home_dir,
+            String::from(".config/fitimer/config.json")
+        );
+        let stat_file = format!(
+            "{}/{}",
+            home_dir,
+            String::from(".cache/fitimer/fitimer.log")
+        );
 
         return StaticConfig {
-            // TODO: rename to log_file or sth better
-            file_path: String::from("fitimer.log"),
-            config_dir,
+            stat_file,
+            config_file,
             date_format: String::from("%Y-%m-%d %H:%M:%S %z"),
         };
     }

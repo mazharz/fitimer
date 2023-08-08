@@ -48,7 +48,7 @@ impl Timer {
     }
 
     fn save_stats(&self) {
-        let stat_file_path = STATIC_CONFIG.file_path.clone();
+        let stat_file_path = STATIC_CONFIG.stat_file.clone();
         let now = Local::now();
         let date_format = STATIC_CONFIG.date_format.as_str();
         let now = now.format(date_format);
