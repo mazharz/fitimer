@@ -30,24 +30,24 @@ impl Fs {
     pub fn read_file(path: String) -> Result<Vec<String>, String> {
         let file = match File::open(&path) {
             Ok(file) => file,
-            Err(_) => {
-                let err = format!("Couldn't read file: {}", &path);
-                return Err(err);
-            }
+            Err(_) => return Err(format!("Couldn't read file: {}", &path)),
         };
         let reader = BufReader::new(file);
-        let lines = reader
-            .lines()
-            .collect::<Result<Vec<String>, _>>()
-            .expect(&format!("Couldn't parse file lines: {}", &path));
-        return Ok(lines);
+        match reader.lines().collect::<Result<Vec<String>, _>>() {
+            Ok(lines) => return Ok(lines),
+            Err(_) => return Err(format!("Couldn't parse file lines: {}", &path)),
+        }
     }
 
-    pub fn read_file_str(path: String) -> String {
-        let mut file = File::open(&path).expect(&format!("Couldn't read file: {}", &path));
+    pub fn read_file_str(path: String) -> Result<String, String> {
+        let mut file = match File::open(&path) {
+            Ok(file) => file,
+            Err(_) => return Err(format!("Couldn't read file: {}", &path)),
+        };
         let mut file_contents = String::new();
-        file.read_to_string(&mut file_contents)
-            .expect("Couldn't read file contents.");
-        return file_contents;
+        match file.read_to_string(&mut file_contents) {
+            Ok(_) => return Ok(file_contents),
+            Err(_) => return Err(String::from("Couldn't read file contents.")),
+        }
     }
 }

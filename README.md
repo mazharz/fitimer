@@ -21,7 +21,7 @@ $ cargo install fitimer
 
 ## Configuration
 
-Fitimer is configurable through a json file, here is the default config located at `$HOME/.config/fitimer/config.json`:
+Fitimer is configurable through a json file, here is the default config located at `~/.config/fitimer/config.json`:
 
 - Default colors use the `gruvbox` color pallete.
 - Durations are in minutes
@@ -48,6 +48,10 @@ Fitimer is configurable through a json file, here is the default config located 
   }
 }
 ```
+
+## Stats
+
+There is a file located at `~/.cache/fitimer/fitimer.log` which logs how much time was spent for each type of activity. This file is used to draw the graph, if it grows too large at any point, you can safely delete it.
 
 ## Todo
 

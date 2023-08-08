@@ -1,5 +1,6 @@
 use crate::fs::Fs;
 use crate::{color::Color, env};
+use notify_rust::Notification;
 use serde::{Deserialize, Serialize};
 use tui::style::Color as TColor;
 
@@ -44,11 +45,20 @@ pub struct ConfigTuiColor {
 
 impl Config {
     pub fn init() -> Config {
-        let config_str = Fs::read_file_str(Config::init_static().config_file);
-        // TODO: think about this following error message, try it out for different circumstances
-        let config_json: Config = serde_json::from_str(&config_str)
-            .expect("Either config file is not valid json, or it lacks certain fields.");
-        return config_json;
+        return match Fs::read_file_str(Config::init_static().config_file) {
+            Ok(config_str) => match serde_json::from_str(&config_str) {
+                Ok(config) => config,
+                Err(_) => {
+                    Notification::new()
+                        .summary("Fitimer")
+                        .body("There was a problem loading your configuration file, falling back on default.")
+                        .show()
+                        .unwrap();
+                    Config::get_default_config()
+                }
+            },
+            Err(_) => Config::get_default_config(),
+        };
     }
 
     pub fn init_static() -> StaticConfig {
@@ -86,6 +96,21 @@ impl Config {
             green,
             red,
             black,
+        };
+    }
+
+    fn get_default_config() -> Config {
+        return Config {
+            color: ConfigColor {
+                black: String::from("#282828"),
+                white: String::from("#fbf1c7"),
+                gray: String::from("#928374"),
+                yellow: String::from("#d79921"),
+                green: String::from("#98971a"),
+                red: String::from("#cc241d"),
+            },
+            tick_rate: 1000,
+            durations: ConfigDurations { work: 25, rest: 5 },
         };
     }
 }
