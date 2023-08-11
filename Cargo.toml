@@ -5,6 +5,7 @@ edition = "2021"
 license = "GPL-3.0-only"
 description = "A timer to keep fit and healthy whilst having a sedentary work."
 keywords = ["timer", "health"]
+repository = "https://github.com/mazharz/fitimer"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
