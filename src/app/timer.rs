@@ -52,7 +52,11 @@ impl Timer {
         let now = Local::now();
         let date_format = STATIC_CONFIG.date_format.as_str();
         let now = now.format(date_format);
-        let formatted_data = format!("{},{},{}", now, self.timer_type, self.expiry.get_elapsed());
+        let timer_type = match self.timer_type {
+            TimerType::Work => "w",
+            TimerType::Rest => "r",
+        };
+        let formatted_data = format!("{},{},{}", now, timer_type, self.expiry.get_elapsed());
         Fs::append_to_file(stat_file_path, formatted_data);
     }
 

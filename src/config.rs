@@ -77,7 +77,7 @@ impl Config {
         return StaticConfig {
             stat_file,
             config_file,
-            date_format: String::from("%Y-%m-%d %H:%M:%S %z"),
+            date_format: String::from("%Y-%m-%d"),
         };
     }
 
