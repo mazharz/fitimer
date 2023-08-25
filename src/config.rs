@@ -49,6 +49,7 @@ impl Config {
             Ok(config_str) => match serde_json::from_str(&config_str) {
                 Ok(config) => config,
                 Err(_) => {
+                    // TODO: handle following unwrap with a mechanism to show modal instead
                     Notification::new()
                         .summary("Fitimer")
                         .body("There was a problem loading your configuration file, falling back on default.")

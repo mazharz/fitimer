@@ -66,7 +66,6 @@ There is a file located at `~/.cache/fitimer/fitimer.log` which logs how much ti
 - [x] remove option to configure date and move to static config
 - [x] move the stat file into somewhere appropriate other than .config
 - [x] change stat file format to use only date (no time) and use w & r instead of work & rest
-- [ ] handle all errors and use Result<> instead
 - [ ] add settings page?
 - [ ] add option to disable graph (prevents setting into file too)
 - [ ] add option to delete stat file content

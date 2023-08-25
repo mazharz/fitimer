@@ -5,12 +5,15 @@ pub struct Color;
 
 impl Color {
     pub fn new(hex: String) -> TColor {
-        let border = Rgb::from_hex_str(&hex).expect("Couldn't convert hex into rgb.");
-        let border = TColor::Rgb(
-            border.get_red() as u8,
-            border.get_green() as u8,
-            border.get_blue() as u8,
-        );
-        border
+        let rgb = Rgb::from_hex_str(&hex);
+        let rgb = match rgb {
+            Ok(color) => TColor::Rgb(
+                color.get_red() as u8,
+                color.get_green() as u8,
+                color.get_blue() as u8,
+            ),
+            Err(_) => TColor::Rgb(255, 255, 255),
+        };
+        return rgb;
     }
 }

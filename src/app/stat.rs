@@ -1,6 +1,6 @@
 use crate::{fs::Fs, STATIC_CONFIG};
 use chrono::{Local, NaiveDate};
-use std::collections::HashMap;
+use std::{cmp::Ordering, collections::HashMap};
 
 #[derive(Clone, Debug)]
 pub struct Stat {
@@ -82,12 +82,9 @@ impl Stat {
     fn get_parsed_line_elements<'a>(line: &'a String) -> (NaiveDate, &'a str, i32) {
         let parts: Vec<&str> = line.split(",").collect();
         let (date, timer_type, duration_secs) = (parts[0], parts[1], parts[2]);
-        let duration_secs = duration_secs
-            .parse::<i32>()
-            .expect("Couldn't parse duration in stats file");
+        let duration_secs = duration_secs.parse::<i32>().unwrap_or_default();
         let date_format = STATIC_CONFIG.date_format.as_str();
-        let date = NaiveDate::parse_from_str(date, date_format)
-            .expect("Couldn't parse date in stats file");
+        let date = NaiveDate::parse_from_str(date, date_format).unwrap_or_default();
 
         return (date, timer_type, duration_secs);
     }
@@ -111,7 +108,7 @@ impl Stat {
                 return (key, get_relevant_field(value) as f64, value.2);
             })
             .collect::<Vec<(String, f64, NaiveDate)>>();
-        work_data.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap());
+        work_data.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap_or(Ordering::Equal));
         return work_data;
     }
 }

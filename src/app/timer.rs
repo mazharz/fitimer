@@ -72,6 +72,7 @@ impl Timer {
         self.timer_type = TimerType::Work;
         self.expiry = Timer::get_work_expiry();
         if show_notification {
+            // TODO: handle following unwrap with a mechanism to show modal instead
             Notification::new()
                 .summary("Fitimer")
                 .body("🔴 Back to work!")
@@ -85,6 +86,7 @@ impl Timer {
         self.timer_type = TimerType::Rest;
         self.expiry = Timer::get_rest_expiry();
         if show_notification {
+            // TODO: handle following unwrap with a mechanism to show modal instead
             Notification::new()
                 .summary("Fitimer")
                 .body("🟢 Take a break!")

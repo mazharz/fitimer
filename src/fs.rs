@@ -7,6 +7,7 @@ pub struct Fs;
 impl Fs {
     pub fn append_to_file(path: String, content: String) {
         Fs::create_file_if_does_not_exist(&path);
+        // TODO: fix the unwrap and make it less error prone
         let mut file = OpenOptions::new()
             .write(true)
             .append(true)

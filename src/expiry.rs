@@ -16,7 +16,7 @@ impl Expiry {
         Expiry {
             beg,
             end,
-            duration: TDuration::from_secs((minutes * 60).try_into().unwrap()),
+            duration: TDuration::from_secs((minutes * 60) as u64),
         }
     }
 
